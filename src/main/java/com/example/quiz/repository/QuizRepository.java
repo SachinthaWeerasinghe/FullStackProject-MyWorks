@@ -21,8 +21,6 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     List<String> findSpecifiedSubject();
     Page<Quiz> findBySubject(String subject, Pageable pageable);
 
-
-
 }
 
 

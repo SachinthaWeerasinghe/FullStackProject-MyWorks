@@ -48,7 +48,7 @@ public class QuizController {
     }
 
     /** To get a question by specifying its id **/
-    @GetMapping("/Quiz/{id}")
+    @GetMapping("/question/{id}")
     public ResponseEntity<Quiz> getQuestionById(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
         Optional<Quiz> ques = quizService.getQuestionById(id);
         if (ques.isPresent()){
@@ -67,7 +67,7 @@ public class QuizController {
     }
 
     /** To Delete an existing Quiz question **/
-    @DeleteMapping("/Quiz/{id}/delete")
+    @DeleteMapping("/question/{id}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long id){
         quizService.deleteQuestion(id);
         return ResponseEntity.noContent().build();
