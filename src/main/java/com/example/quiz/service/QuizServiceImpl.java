@@ -3,7 +3,7 @@
  *  * Quiz Page Development
  */
 
-package com.example.quiz.operation;
+package com.example.quiz.service;
 
 import com.example.quiz.model.Quiz;
 import com.example.quiz.repository.QuizRepository;
@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +20,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class QuizOperationImpl implements QuizOperation {
+public class QuizServiceImpl implements QuizService {
     private final QuizRepository quizRepo;
     @Override
     public Quiz createQuiz(Quiz q) {
@@ -44,18 +43,13 @@ public class QuizOperationImpl implements QuizOperation {
     }
 
     @Override
-    public List<String> getAllGrades() {
-        return quizRepo.findSpecifiedGrade();
-    }
-
-    @Override
     public Quiz updateQuiz(Long id, Quiz question) throws ChangeSetPersister.NotFoundException {
         Optional<Quiz> ques = this.getQuestionById(id);
         if (ques.isPresent()){
             Quiz updatedQuiz = ques.get();
             updatedQuiz.setQuestion(question.getQuestion());
-            updatedQuiz.setMultipleOptions(question.getMultipleOptions());
-            updatedQuiz.setCorrectOption(question.getCorrectOption());
+            updatedQuiz.setMultiple_options(question.getMultiple_options());
+            updatedQuiz.setCorrect_option(question.getCorrect_option());
             return quizRepo.save(updatedQuiz);
         }else {
             throw new ChangeSetPersister.NotFoundException();
@@ -72,9 +66,5 @@ public class QuizOperationImpl implements QuizOperation {
         return quizRepo.findBySubject(subject, pageable).getContent();
     }
 
-    @Override
-    public List<Quiz> getQuizForStudentByGrade(Integer numOfQuestions, String grade) {
-        Pageable pageable = PageRequest.of(0, numOfQuestions);
-        return quizRepo.findByGrade(grade, pageable).getContent();
-    }
+
 }

@@ -16,13 +16,13 @@ import java.util.List;
 
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
-    @Query("SELECT DISTINCT q.subject_category FROM Question q")
+    @Query("SELECT DISTINCT q.subject FROM Quiz q")
 
     List<String> findSpecifiedSubject();
     Page<Quiz> findBySubject(String subject, Pageable pageable);
 
-    List<String> findSpecifiedGrade();
-    Page<Quiz> findByGrade(String grade, Pageable pageable);
+
+
 }
 
 

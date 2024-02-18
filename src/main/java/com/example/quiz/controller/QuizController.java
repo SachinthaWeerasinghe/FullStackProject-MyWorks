@@ -6,7 +6,7 @@
 package com.example.quiz.controller;
 
 import com.example.quiz.model.Quiz;
-import com.example.quiz.operation.QuizOperation;
+import com.example.quiz.service.QuizService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -23,18 +23,19 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 @CrossOrigin("http://localhost:5173")
 @RestController
-@RequestMapping("/api/quiz")
+@RequestMapping("/api/Quiz")
+
 @RequiredArgsConstructor
 
 
 
 public class QuizController {
-    private final QuizOperation quizOperation;
+    private final QuizService quizService;
 
     /** To Create a new question for a quiz **/
-    @PostMapping("/create-new-quiz")
+    @PostMapping("/create-new-question")
     public ResponseEntity<Quiz> createQuiz(@Valid @RequestBody Quiz question){
-        Quiz createdQuiz = quizOperation.createQuiz(question);
+        Quiz createdQuiz = quizService.createQuiz(question);
         return ResponseEntity.status(CREATED).body(createdQuiz);
     }
 
@@ -42,14 +43,14 @@ public class QuizController {
     /** To get all the questions available in the database **/
     @GetMapping("/all-questions")
     public ResponseEntity<List<Quiz>> getAllQuestions(){
-        List<Quiz> questions = quizOperation.getAllQuestions();
+        List<Quiz> questions = quizService.getAllQuestions();
         return ResponseEntity.ok(questions);
     }
 
     /** To get a question by specifying its id **/
-    @GetMapping("/question/{id}")
+    @GetMapping("/Quiz/{id}")
     public ResponseEntity<Quiz> getQuestionById(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
-        Optional<Quiz> ques = quizOperation.getQuestionById(id);
+        Optional<Quiz> ques = quizService.getQuestionById(id);
         if (ques.isPresent()){
             return ResponseEntity.ok(ques.get());
         }else {
@@ -58,17 +59,17 @@ public class QuizController {
     }
 
     /** To update an existing Quiz **/
-    @PutMapping("/question/{id}/update")
+    @PutMapping("/Quiz/{id}/update")
     public ResponseEntity<Quiz> updateQuiz(
             @PathVariable Long id, @RequestBody Quiz question) throws ChangeSetPersister.NotFoundException {
-        Quiz updatedQuiz = quizOperation.updateQuiz(id, question);
+        Quiz updatedQuiz = quizService.updateQuiz(id, question);
         return ResponseEntity.ok(updatedQuiz);
     }
 
     /** To Delete an existing Quiz question **/
-    @DeleteMapping("/question/{id}/delete")
+    @DeleteMapping("/Quiz/{id}/delete")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long id){
-        quizOperation.deleteQuestion(id);
+        quizService.deleteQuestion(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -77,7 +78,7 @@ public class QuizController {
      **/
     @GetMapping("/subjects")
     public ResponseEntity<List<String>> getAllSubjects(){
-        List<String> subjects = quizOperation.getAllSubjects();
+        List<String> subjects = quizService.getAllSubjects();
         return ResponseEntity.ok(subjects);
     }
 
@@ -87,7 +88,7 @@ public class QuizController {
     @GetMapping("/Quiz/fetch-quiz-for-student")
     public ResponseEntity<List<Quiz>> getQuizForStudent(
             @RequestParam Integer numOfQuestions, @RequestParam String subject){
-        List<Quiz> allQuestions = quizOperation.getQuizForStudent(numOfQuestions, subject);
+        List<Quiz> allQuestions = quizService.getQuizForStudent(numOfQuestions, subject);
 
         List<Quiz> mutableQuestions = new ArrayList<>(allQuestions);
         Collections.shuffle(mutableQuestions);        /** To Shuffle the questions **/
@@ -99,25 +100,5 @@ public class QuizController {
         return ResponseEntity.ok(randomQues);
     }
 
-    /**
-        To get a Quiz for the student according to their grade
-     **/
-    @GetMapping("/quiz/fetch-quiz-for-user-by-grade")
-    public ResponseEntity<List<Quiz>> getQuizForStudentByGrade(
-            @RequestParam Integer numOfQuestions, @RequestParam String grade){
-        List<Quiz> allQuestions = quizOperation.getQuizForStudent(numOfQuestions, grade);
-
-        List<Quiz> mutableQuestions = new ArrayList<>(allQuestions);
-        Collections.shuffle(mutableQuestions);
-
-        /** Calculate the number of available questions based on
-          the minimum of numberOfQuestion and the size of the mutableQuestions
-         */
-        int availableQuestions = Math.min(numOfQuestions, mutableQuestions.size());
-
-        /** To available questions become randomized when retaking the Quiz **/
-        List<Quiz> randomQues = mutableQuestions.subList(0, availableQuestions);
-        return ResponseEntity.ok(randomQues);
-    }
 
 }

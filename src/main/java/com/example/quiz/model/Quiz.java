@@ -3,6 +3,7 @@
  *  * Quiz Page Development
  */
 
+
 package com.example.quiz.model;
 
 import jakarta.persistence.*;
@@ -21,18 +22,19 @@ public class Quiz {
     @NotBlank
     private String question;
     @NotBlank
-    private String subjectCategory;
+    private String subject;
 
-    @NotBlank
-    private String grade;
+
     @NotBlank
     private String questionCategory;
 
 
     @ElementCollection
-    private List<String> MultipleOptions;
+    private List<String> multiple_options;
 
 
     @ElementCollection
-    private List<String> correctOption;
+    private List<String> correct_option;
 }
+
+
