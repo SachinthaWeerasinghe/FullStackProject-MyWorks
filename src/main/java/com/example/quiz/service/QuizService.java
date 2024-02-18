@@ -4,7 +4,7 @@
  */
 
 
-package com.example.quiz.operation;
+package com.example.quiz.service;
 
 import com.example.quiz.model.Quiz;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -14,7 +14,7 @@ import java.util.Optional;
 
 
 
-public interface QuizOperation {
+public interface QuizService {
 
     /** To create a new quiz **/
     Quiz createQuiz(Quiz q);
@@ -28,9 +28,6 @@ public interface QuizOperation {
     /** To get all the available subjects */
     List<String> getAllSubjects();
 
-    /** To get all the grades that quizzes are available **/
-    List<String> getAllGrades();
-
     /** To provide the accessibility for updating the quizzes */
     Quiz updateQuiz(Long id, Quiz q) throws ChangeSetPersister.NotFoundException;
 
@@ -38,8 +35,5 @@ public interface QuizOperation {
     void  deleteQuestion(Long id);
 
     List<Quiz> getQuizForStudent(Integer numOfQuestions, String subject);
-
-    List<Quiz> getQuizForStudentByGrade(Integer numOfQuestions, String grade);
-
 
 }
